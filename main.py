@@ -1,24 +1,32 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 import requests
+import redis
+from rq import Worker, Queue, Connection
+from pymongo import MongoClient
+import json
 
 app = Flask(__name__)
 
 order_id='order1'
-newOrder = ['Pizza1', 'Pizza2']
+message='new message'
+message_id='1'
+order='Pizza'
 
 @app.route('/getorders/'+order_id , methods=['GET'])
 def addNewOrder():
-	headers = {
-		'Access-Control-Request-Headers': '*',
-		'api-key': 'Idfkj9Oq9mZ23dZkDjhJDe9Sin0FOhjG4pR9Jl0bXCrIKEqrOT2PgScLRFek7kvl',
+	doc_info = {'orders': [order]}
+	print('Order Added')
+	return jsonify({'data': doc_info})
+
+
+@app.route('/messages/'+message_id , methods=['GET'])
+def addNewMessage():
+	doc_info = {'message': message,
+	'status':'pending'
 	}
-	doc_info = {'orderIDs': newOrder}
-	json_data = {
-		'collection': 'Orders',
-		'database': 'Restaurant',
-		'dataSource': 'Cluster0',
-		'document': doc_info
-	}
+
+	print('Message Sent')
+	return Response(json.dumps(doc_info),mimetype='application/json')
 	return jsonify({'data': doc_info})
 
 
@@ -27,19 +35,9 @@ def addNewOrder():
 
 @app.route('/getorders', methods=['GET'])
 def addOrder():
-	headers = {
-		'Access-Control-Request-Headers': '*',
-		'api-key': 'Idfkj9Oq9mZ23dZkDjhJDe9Sin0FOhjG4pR9Jl0bXCrIKEqrOT2PgScLRFek7kvl',
-	}
-	doc_info = {'orderIDs': ['Pizza1', 'Pizza2']}
-	json_data = {
-		'collection': 'Orders',
-		'database': 'Restaurant',
-		'dataSource': 'Cluster0',
-		'document': doc_info
-	}
+	doc_info = {'orderIDs': order_id}
 
-	print('api added')
+	print('Order added')
 	return jsonify({'data': doc_info})
 
 
@@ -51,6 +49,8 @@ def welcome():
 
 
 if __name__ == '__main__':
+	message=input('Write a new message: ')
+	order=input('Item: ')
 	app.run(debug=True)
 
 

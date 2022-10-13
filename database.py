@@ -2,6 +2,20 @@ from pymongo import MongoClient
 
 
 def get_database():
+    headers = {
+		'Access-Control-Request-Headers': '*',
+		'api-key': 'Idfkj9Oq9mZ23dZkDjhJDe9Sin0FOhjG4pR9Jl0bXCrIKEqrOT2PgScLRFek7kvl',
+	}
+    doc_info = {'message': 'My new message',
+	'status':'pending'
+	}
+    json_data = {
+		'collection': 'Messages',
+		'database': 'Restaurant',
+		'dataSource': 'Cluster0',
+		'document': doc_info
+	}
+	
     # Provide the mongodb atlas url to connect python to mongodb using pymongo
     CONNECTION_STRING = "https://data.mongodb-api.com/app/data-aipuo/endpoint/data/v1/action/insertOne"
 
